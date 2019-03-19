@@ -9,39 +9,6 @@ import java.util.stream.Collectors;
 
 public class CriptografiaCesariana implements Criptografia {
 
-	public static final Map<Integer, String> alfabeto;
-	static {
-		alfabeto = new HashMap<>();
-		alfabeto.put(1, "a");
-		alfabeto.put(2, "b");
-		alfabeto.put(3, "c");
-		alfabeto.put(4, "d");
-		alfabeto.put(5, "e");
-		alfabeto.put(6, "f");
-		alfabeto.put(7, "g");
-		alfabeto.put(8, "h");
-		alfabeto.put(9, "i");
-		alfabeto.put(10, "j");
-		alfabeto.put(11, "k");
-		alfabeto.put(12, "l");
-		alfabeto.put(13, "m");
-		alfabeto.put(14, "n");
-		alfabeto.put(15, "o");
-		alfabeto.put(16, "p");
-		alfabeto.put(17, "q");
-		alfabeto.put(18, "r");
-		alfabeto.put(19, "s");
-		alfabeto.put(20, "t");
-		alfabeto.put(21, "u");
-		alfabeto.put(22, "v");
-		alfabeto.put(23, "w");
-		alfabeto.put(24, "x");
-		alfabeto.put(25, "y");
-		alfabeto.put(26, "z");
-	}
-
-	// private String encriptar(String texto, Function<Integer, Integer> cifra){
-
 	@Override
 	public String criptografar(String texto) {
 		if (texto.equals(null)) {
