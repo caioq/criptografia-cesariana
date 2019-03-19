@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class CriptografiaCesariana implements Criptografia {
@@ -39,24 +39,37 @@ public class CriptografiaCesariana implements Criptografia {
 		alfabeto.put(25, "y");
 		alfabeto.put(26, "z");
 	}
-	
-	//private String encriptar(String texto, Function<Integer, Integer> cifra){
+
+	// private String encriptar(String texto, Function<Integer, Integer> cifra){
 
 	@Override
 	public String criptografar(String texto) {
-		if(texto.equals(null)) {
+		if (texto.equals(null)) {
 			throw new NullPointerException();
 		}
-		if(texto.isEmpty()) {
+		if (texto.isEmpty()) {
 			throw new IllegalArgumentException();
 		}
 		// converte string em lista de chars
 		List<Character> listCharsBefore = texto.chars().mapToObj(i -> (char) i).collect(Collectors.toList());
 
+		// calcula valor da letra criptografada
+		Function<Character, Character> encriptar = letra -> {
+			Character novaLetra = (char) (letra + 3);
+			if (novaLetra > 122) {
+				novaLetra = (char) (novaLetra - 26);
+			}
+			return novaLetra;
+		};
+		// converte letra para minusculo
+		Function<Character, Character> toLowerCase = Character::toLowerCase;
+		// Une as duas funcoes de tratamento na criptografia
+		Function<Character, Character> transformacao = toLowerCase.andThen(encriptar);
+
 		// criptografa cada char da lista
 		String textCrypted = listCharsBefore.stream().map(c -> {
 			if (c.isLetter(c)) {
-				return getCryptedValue(alfabeto, c.toString());
+				return transformacao.apply(c).toString();
 			}
 			return c.toString();
 		}).collect(Collectors.joining(""));
@@ -66,50 +79,37 @@ public class CriptografiaCesariana implements Criptografia {
 
 	@Override
 	public String descriptografar(String texto) {
-		if(texto.equals(null)) {
+		if (texto.equals(null)) {
 			throw new NullPointerException();
 		}
-		if(texto.isEmpty()) {
+		if (texto.isEmpty()) {
 			throw new IllegalArgumentException();
 		}
 		// converte string em lista de chars
 		List<Character> listCharsBefore = texto.chars().mapToObj(i -> (char) i).collect(Collectors.toList());
 
+		// calcula valor da letra criptografada
+		Function<Character, Character> desencriptar = letra -> {
+			Character novaLetra = (char) (letra - 3);
+			if (novaLetra < 97) {
+				novaLetra = (char) (122 - (96 - novaLetra));
+			}
+			return novaLetra;
+		};
+		// converte letra para minusculo
+		Function<Character, Character> toLowerCase = Character::toLowerCase;
+		// Une as duas funcoes de tratamento na criptografia
+		Function<Character, Character> transformacao = toLowerCase.andThen(desencriptar);
+
 		// descriptografa cada char da lista
 		String textDecrypted = listCharsBefore.stream().map(c -> {
 			if (c.isLetter(c)) {
-				return getDecryptedValue(alfabeto, c.toString());
+				return transformacao.apply(c).toString();
 			}
 			return c.toString();
 		}).collect(Collectors.joining(""));
 
 		return textDecrypted;
-	}
-
-	// Obtem novo valor para o char que deseja ser criptografado
-	public String getCryptedValue(Map<Integer, String> map, String value) {
-		Integer newKey = Integer.valueOf(getKeyByValue(map, value).toArray()[0].toString()) + 3;
-		if (newKey > 26) {
-			newKey = newKey - 26;
-		}
-		return alfabeto.get(newKey);
-	}
-
-	// Obtem novo valor para o char que deseja ser descriptografado
-	public String getDecryptedValue(Map<Integer, String> map, String value) {
-		Integer newKey = Integer.valueOf(getKeyByValue(map, value).toArray()[0].toString()) - 3;
-		if (newKey < 1) {
-			newKey = 26 - newKey;
-		}
-		return alfabeto.get(newKey);
-	}
-
-	
-	
-	// Obtem key do mapa alfabeto atraves do valor/letra
-	public <K, V> Set<Integer> getKeyByValue(Map<Integer, String> map, String value) {
-		return map.entrySet().stream().filter(e -> e.getValue().equalsIgnoreCase(value)).map(Map.Entry::getKey)
-				.collect(Collectors.toSet());
 	}
 
 }
